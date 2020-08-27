@@ -1,0 +1,27 @@
+#bin/sh
+
+# get branch name
+branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+
+# get .gitignore path
+ignore="$(git rev-parse --show-toplevel)/.gitignore"
+
+paths=(
+    'some/path'
+    'another/path'
+)
+
+if [ $branch = 'master' ] 
+then
+    for path in ${paths[*]}
+    do
+	sed -i "\|$path|d" $ignore
+	echo "removed $path from .gitignore"
+    done
+else
+    for path in ${paths[*]}
+    do
+	echo $path >> $ignore
+	echo "added $path to .gitignore"
+    done
+fi
